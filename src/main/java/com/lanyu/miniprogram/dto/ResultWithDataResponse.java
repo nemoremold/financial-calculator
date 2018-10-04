@@ -4,15 +4,15 @@ package com.lanyu.miniprogram.dto;
  * @author i343746
  */
 public class ResultWithDataResponse {
-    Object result;
+    Object status;
     Object data;
 
-    public Object getResult() {
-        return result;
+    public Object getStatus() {
+        return status;
     }
 
-    public void setResult(Object result) {
-        this.result = result;
+    public void setStatus(Object status) {
+        this.status = status;
     }
 
     public Object getData() {

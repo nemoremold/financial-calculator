@@ -157,12 +157,12 @@ public class UserRegisterSMSService {
 
     // 短信应用SDK AppID
     // 写在application.properties里
-    @Value("${tcloud.sms.appid.test}")
+    @Value("${tcloud.sms.appid}")
     private int appid;
 
     // 短信应用SDK AppKey
     // 写在application.properties里
-    @Value("${tcloud.sms.appkey.test}")
+    @Value("${tcloud.sms.appkey}")
     private String appkey;
 
     // 短信模板ID，需要在短信应用中申请
@@ -273,5 +273,14 @@ public class UserRegisterSMSService {
 
         // 返回发送算成功信息
         return new ServiceResponse(ServiceStatus.SUCCESS.msg, ServiceInfo.SUCCESS.msg, redisSetResponse.code);
+    }
+
+    public boolean verifyCode(String code, String phone){
+        Jedis jedis = new Jedis(redisHost, redisPort);
+        String redisCode = jedis.get(phone);
+        if(code == null || redisCode == null)
+            return false;
+
+        return code.equals(redisCode);
     }
 }
