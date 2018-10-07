@@ -1,13 +1,21 @@
 package com.lanyu.miniprogram.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lanyu.miniprogram.bean.User;
 import com.lanyu.miniprogram.dto.ResultWithDataResponse;
 import com.lanyu.miniprogram.dto.SingleResultResponse;
 import com.lanyu.miniprogram.dto.UpdateUserInfoDTO;
 import com.lanyu.miniprogram.repository.UserRepository;
+import com.lanyu.miniprogram.service.UserLoginService;
 import com.lanyu.miniprogram.service.UserRegisterSMSService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.nio.file.attribute.UserPrincipalLookupService;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author i343746
@@ -20,6 +28,9 @@ public class UserController {
 
     @Autowired
     private UserRegisterSMSService smsService;
+
+    @Autowired
+    private UserLoginService userLoginService;
 
     @ResponseBody
     @RequestMapping(path = "/checkRegister", method = RequestMethod.GET)
@@ -73,5 +84,16 @@ public class UserController {
     @RequestMapping(path = "/getRedis", method = RequestMethod.GET)
     public SingleResultResponse getRedis(){
         return new SingleResultResponse(smsService.getRedis());
+    }
+
+    @ResponseBody
+    @RequestMapping(path ="/login", method = RequestMethod.GET)
+    public SingleResultResponse login(@RequestParam(required = true) String code) throws IOException {
+        String res = userLoginService.getOpenId(code);
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> map = new HashMap<String, Object>();
+        // convert JSON string to Map
+        map = mapper.readValue(res, new TypeReference<Map<String, String>>(){});
+        return new SingleResultResponse(map);
     }
 }
