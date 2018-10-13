@@ -2,6 +2,8 @@ package com.lanyu.miniprogram.dto;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.math.BigDecimal;
+
 /**
  * @author i343746
  */
@@ -61,11 +63,11 @@ public class RenderDataDTO {
     @SerializedName(value ="pensionGapPerMonth")
     private int pensionGapPerMonth;
     @SerializedName(value ="salaries")
-    private String salaries;
+    private BigDecimal[] salaries;
     @SerializedName(value ="pensions")
-    private String pensions;
+    private BigDecimal[] pensions;
     @SerializedName(value ="gaps")
-    private String gaps;
+    private BigDecimal[] gaps;
 
     public String getGenerate_time() {
         return generate_time;
@@ -283,27 +285,27 @@ public class RenderDataDTO {
         this.pensionGapPerMonth = pensionGapPerMonth;
     }
 
-    public String getSalaries() {
+    public BigDecimal[] getSalaries() {
         return salaries;
     }
 
-    public void setSalaries(String salaries) {
+    public void setSalaries(BigDecimal[] salaries) {
         this.salaries = salaries;
     }
 
-    public String getPensions() {
+    public BigDecimal[] getPensions() {
         return pensions;
     }
 
-    public void setPensions(String pensions) {
+    public void setPensions(BigDecimal[] pensions) {
         this.pensions = pensions;
     }
 
-    public String getGaps() {
+    public BigDecimal[] getGaps() {
         return gaps;
     }
 
-    public void setGaps(String gaps) {
+    public void setGaps(BigDecimal[] gaps) {
         this.gaps = gaps;
     }
 }
