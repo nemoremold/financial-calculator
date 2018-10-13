@@ -28,16 +28,13 @@ public class ReportController {
 //    private ReportService reportService;
 
     /**
-     * ？？
      * @param wechatId
-     * @param timestamp
      * @return
      */
     @ResponseBody
     @RequestMapping(path = "/getReportCount", method = RequestMethod.GET)
     public SingleResultResponse getReportCountByCompositeKey(
-            @RequestParam(required = true) String wechatId,
-            @RequestParam(required = true) String timestamp
+            @RequestParam(required = true) String wechatId
     ) {
         return new SingleResultResponse(1);
     }

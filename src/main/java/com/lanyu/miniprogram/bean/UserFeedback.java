@@ -10,14 +10,17 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name="feedback")
-@IdClass(IdTimeKeys.class)
 public class UserFeedback implements Serializable {
     @Id
+    @GeneratedValue
+    @NotNull
+    @Column(name = "id")
+    private int id;
+
     @NotNull
     @Column(name = "user_id")
     private String wechatId;
 
-    @Id
     @NotNull
     @Column(name = "timestamp")
     private String timestamp;
@@ -25,6 +28,14 @@ public class UserFeedback implements Serializable {
     @NotNull
     @Column(name = "feedback")
     private String feedback;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getWechatId() {
         return wechatId;
