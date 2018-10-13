@@ -1,5 +1,6 @@
-package com.lanyu.miniprogram.bean;
+package com.lanyu.miniprogram.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -7,8 +8,7 @@ import java.util.List;
 /**
  * @author i343746
  */
-public class RenderData {
-    private String wechatId;
+public class TemplateDataDTO {
     @SerializedName(value ="generate_time")
     private String generate_time;
     @SerializedName(value ="avatar_url")
@@ -64,19 +64,26 @@ public class RenderData {
     @SerializedName(value ="pensionGapPerMonth")
     private double pensionGapPerMonth;
     @SerializedName(value ="salaries")
-    private String salaries;
+    private List<Integer> salaries;
     @SerializedName(value ="pensions")
-    private String pensions;
+    private List<Integer> pensions;
     @SerializedName(value ="gaps")
-    private String gaps;
+    private List<Integer> gaps;
 
-    public String getWechatId() {
-        return wechatId;
-    }
+    private List<Integer> xArray;
+    // 姓名 用户姓名
+    private String manager_name;
+    // 手机号
+    private String phone;
+    // 所在机构, 用户所在的单位、企业 如：XX人寿、XX银行
+    private String enterprise;
+    // 分支机构 用户所在的单位、企业的分支部门 如：XX分公司、XX分行
+    private String enterprise_branch;
+    // 职位名称 | 用户的职位、职称等 如：客户经理、理财经理
+    private String title;
 
-    public void setWechatId(String wechatId) {
-        this.wechatId = wechatId;
-    }
+    private String wechatId;
+
 
     public String getGenerate_time() {
         return generate_time;
@@ -262,6 +269,10 @@ public class RenderData {
         this.pensionInFirstRetirementMonth = pensionInFirstRetirementMonth;
     }
 
+    public void setPensionInFirstRetirementMonth(int pensionInFirstRetirementMonth) {
+        this.pensionInFirstRetirementMonth = pensionInFirstRetirementMonth;
+    }
+
     public double getPensionReplacementRate() {
         return pensionReplacementRate;
     }
@@ -294,27 +305,83 @@ public class RenderData {
         this.pensionGapPerMonth = pensionGapPerMonth;
     }
 
-    public String getSalaries() {
+    public List<Integer> getSalaries() {
         return salaries;
     }
 
-    public void setSalaries(String salaries) {
+    public void setSalaries(List<Integer> salaries) {
         this.salaries = salaries;
     }
 
-    public String getPensions() {
+    public List<Integer> getPensions() {
         return pensions;
     }
 
-    public void setPensions(String pensions) {
+    public void setPensions(List<Integer> pensions) {
         this.pensions = pensions;
     }
 
-    public String getGaps() {
+    public List<Integer> getGaps() {
         return gaps;
     }
 
-    public void setGaps(String gaps) {
+    public void setGaps(List<Integer> gaps) {
         this.gaps = gaps;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEnterprise() {
+        return enterprise;
+    }
+
+    public void setEnterprise(String enterprise) {
+        this.enterprise = enterprise;
+    }
+
+    public String getEnterprise_branch() {
+        return enterprise_branch;
+    }
+
+    public void setEnterprise_branch(String enterprise_branch) {
+        this.enterprise_branch = enterprise_branch;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public List<Integer> getxArray() {
+        return xArray;
+    }
+
+    public void setxArray(List<Integer> xArray) {
+        this.xArray = xArray;
+    }
+
+    public String getWechatId() {
+        return wechatId;
+    }
+
+    public void setWechatId(String wechatId) {
+        this.wechatId = wechatId;
     }
 }

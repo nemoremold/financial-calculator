@@ -1,9 +1,9 @@
 package com.lanyu.miniprogram.service;
 
 import com.google.gson.*;
-import com.lanyu.miniprogram.bean.RenderData;
+import com.lanyu.miniprogram.bean.TemplateData;
 import com.lanyu.miniprogram.bean.User;
-import com.lanyu.miniprogram.dto.RenderDataDTO;
+import com.lanyu.miniprogram.dto.TemplateDataDTO;
 import com.lanyu.miniprogram.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author i343746
@@ -26,7 +25,7 @@ public class RenderDataAdapterService {
 
     Logger logger = LoggerFactory.getLogger(RenderDataAdapterService.class);
 
-    public RenderDataDTO inflateData(RenderDataDTO dataDTO){
+    public TemplateDataDTO inflateData(TemplateDataDTO dataDTO){
         dataDTO = this.getDataThatCanBeConvertToJson(this.getDataThatStoredInMysql(dataDTO));
 
         dataDTO.setGender(dataDTO.getGender().equals("男")? "先生": "女士");
@@ -70,7 +69,6 @@ public class RenderDataAdapterService {
 
         Collections.sort(pensions);
         Collections.sort(gaps);
-        System.out.println(dataDTO.getWechatId());
         User user = userRepository.findByWechatId(dataDTO.getWechatId());
         dataDTO.setManager_name(user.getName());
         dataDTO.setEnterprise(user.getEnterprise());
@@ -81,7 +79,7 @@ public class RenderDataAdapterService {
         return dataDTO;
     }
 
-    public RenderData getDataThatStoredInMysql(RenderDataDTO dto){
+    public TemplateData getDataThatStoredInMysql(TemplateDataDTO dto){
         Gson gson = new GsonBuilder().registerTypeAdapter(List.class, new JsonSerializer<List<?>>() {
             @Override
             public JsonElement serialize(List<?> src, Type typeOfSrc, JsonSerializationContext context) {
@@ -91,10 +89,10 @@ public class RenderDataAdapterService {
         }).create();
         String dtoJson = gson.toJson(dto);
 
-        return gson.fromJson(dtoJson, RenderData.class);
+        return gson.fromJson(dtoJson, TemplateData.class);
     }
 
-    public RenderDataDTO getDataThatCanBeConvertToJson(RenderData data){
+    public TemplateDataDTO getDataThatCanBeConvertToJson(TemplateData data){
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(List.class, new JsonDeserializer<List<Integer>>() {
                     @Override
@@ -110,15 +108,15 @@ public class RenderDataAdapterService {
                         return tar;
                 }}).create();
         String renderJson = gson.toJson(data);
-        RenderDataDTO dto = gson.fromJson(renderJson, RenderDataDTO.class);
+        TemplateDataDTO dto = gson.fromJson(renderJson, TemplateDataDTO.class);
         return dto;
     }
 
-    public String saveInDatabase(RenderData data){
+    public String saveInDatabase(TemplateData data){
         return null;
     }
 
-    public RenderData getDataFromDatabase(){
+    public TemplateData getDataFromDatabase(){
         return null;
     }
 }

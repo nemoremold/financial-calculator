@@ -1,8 +1,7 @@
 package com.lanyu.miniprogram.controller;
 
 import com.google.gson.*;
-import com.lanyu.miniprogram.bean.RenderData;
-import com.lanyu.miniprogram.dto.RenderDataDTO;
+import com.lanyu.miniprogram.dto.TemplateDataDTO;
 import com.lanyu.miniprogram.dto.SingleResultResponse;
 import com.lanyu.miniprogram.service.RenderDataAdapterService;
 import com.lanyu.miniprogram.service.ReportService;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -121,8 +119,8 @@ public class ReportController {
             }
         }).create();
 
-        RenderDataDTO renderDataDTO = gson.fromJson(json, RenderDataDTO.class);
-        RenderDataDTO data = adapterService.inflateData(renderDataDTO);
+        TemplateDataDTO templateDataDTO = gson.fromJson(json, TemplateDataDTO.class);
+        TemplateDataDTO data = adapterService.inflateData(templateDataDTO);
 
         return new SingleResultResponse(reportService.getReport(data));
     }

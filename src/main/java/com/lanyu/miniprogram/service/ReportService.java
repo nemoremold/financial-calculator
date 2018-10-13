@@ -1,8 +1,7 @@
 package com.lanyu.miniprogram.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.lanyu.miniprogram.dto.RenderDataDTO;
+import com.lanyu.miniprogram.dto.TemplateDataDTO;
 import com.lanyu.miniprogram.repository.ReportDataRepository;
 import com.lanyu.miniprogram.repository.ReportRepository;
 import org.slf4j.Logger;
@@ -12,10 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @Author yansong
@@ -37,7 +34,7 @@ public class ReportService {
      * @return base64字符串
      * @throws IOException
      */
-    public String getReport(RenderDataDTO data) throws IOException {
+    public String getReport(TemplateDataDTO data) throws IOException {
         Process process = null;
         String total = "";
         String timestamp = Long.toString(new Date().getTime());
