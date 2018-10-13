@@ -6,7 +6,9 @@ import com.lanyu.miniprogram.bean.User;
 import com.lanyu.miniprogram.dto.ResultWithDataResponse;
 import com.lanyu.miniprogram.dto.SingleResultResponse;
 import com.lanyu.miniprogram.dto.UpdateUserInfoDTO;
+import com.lanyu.miniprogram.dto.UserFeedbackDTO;
 import com.lanyu.miniprogram.repository.UserRepository;
+import com.lanyu.miniprogram.service.UserFeedbackService;
 import com.lanyu.miniprogram.service.UserLoginService;
 import com.lanyu.miniprogram.service.UserRegisterSMSService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class UserController {
 
     @Autowired
     private UserLoginService userLoginService;
+
+    @Autowired
+    private UserFeedbackService userFeedbackService;
 
     @ResponseBody
     @RequestMapping(path = "/checkRegister", method = RequestMethod.GET)
@@ -58,6 +63,14 @@ public class UserController {
         response.setData(result);
 
         return new SingleResultResponse(response);
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/userFeedback", method = RequestMethod.POST)
+    public SingleResultResponse feedback(@RequestBody UserFeedbackDTO userFeedbackDTO) {
+        return new SingleResultResponse(
+                userFeedbackService.feedback(userFeedbackDTO.getWechatId(), userFeedbackDTO.getFeedback())
+        );
     }
 
     @ResponseBody
