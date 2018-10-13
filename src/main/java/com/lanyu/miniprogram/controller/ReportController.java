@@ -1,6 +1,7 @@
 package com.lanyu.miniprogram.controller;
 
 import com.lanyu.miniprogram.dto.RenderDataDTO;
+import com.lanyu.miniprogram.dto.ReportDataDTO;
 import com.lanyu.miniprogram.dto.SingleResultResponse;
 import com.lanyu.miniprogram.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +68,14 @@ public class ReportController {
             @RequestParam(required = true) String timestamp
     ) {
         return new SingleResultResponse(1);
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/setReportData", method = RequestMethod.POST)
+    public SingleResultResponse setReportData(
+            @RequestBody ReportDataDTO reportDataDTO
+    ) {
+        return new SingleResultResponse(reportDataDTO);
     }
 
     /**
