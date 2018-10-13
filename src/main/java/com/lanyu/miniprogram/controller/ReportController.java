@@ -1,10 +1,18 @@
 package com.lanyu.miniprogram.controller;
 
+import com.google.gson.*;
+import com.lanyu.miniprogram.bean.RenderData;
 import com.lanyu.miniprogram.dto.RenderDataDTO;
 import com.lanyu.miniprogram.dto.SingleResultResponse;
+import com.lanyu.miniprogram.service.RenderDataAdapterService;
 import com.lanyu.miniprogram.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 业务逻辑：
@@ -26,6 +34,9 @@ import org.springframework.web.bind.annotation.*;
 public class ReportController {
 //    @Autowired
 //    private ReportService reportService;
+
+    @Autowired
+    RenderDataAdapterService adapterService;
 
     /**
      * ？？
@@ -96,8 +107,23 @@ public class ReportController {
     @ResponseBody
     @RequestMapping(path = "/generateReport", method = RequestMethod.POST)
     public SingleResultResponse generateReport(
-            @RequestBody RenderDataDTO renderDataDTO
+            @RequestBody String json
     ) {
-        return new SingleResultResponse(renderDataDTO);
+        Gson gson = new GsonBuilder().registerTypeAdapter(List.class, new JsonDeserializer<List<?>>() {
+            @Override
+            public List<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                ArrayList<Integer> list = new ArrayList<>();
+                for (JsonElement e: json.getAsJsonArray()) {
+                    list.add(e.getAsInt());
+                }
+                return list;
+            }
+        }).create();
+
+        RenderDataDTO renderDataDTO = gson.fromJson(json, RenderDataDTO.class);
+        RenderData renderData = adapterService.getDataThatStoredInMysql(renderDataDTO);
+        System.out.println(renderData);
+
+        return new SingleResultResponse(adapterService.getDataThatCanBeConvertToJson(renderData));
     }
 }

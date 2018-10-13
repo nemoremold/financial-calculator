@@ -1,6 +1,5 @@
-package com.lanyu.miniprogram.dto;
+package com.lanyu.miniprogram.bean;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -8,7 +7,7 @@ import java.util.List;
 /**
  * @author i343746
  */
-public class RenderDataDTO {
+public class RenderData {
     @SerializedName(value ="generate_time")
     private String generate_time;
     @SerializedName(value ="avatar_url")
@@ -64,11 +63,11 @@ public class RenderDataDTO {
     @SerializedName(value ="pensionGapPerMonth")
     private int pensionGapPerMonth;
     @SerializedName(value ="salaries")
-    private List<Integer> salaries;
+    private String salaries;
     @SerializedName(value ="pensions")
-    private List<Integer> pensions;
+    private String pensions;
     @SerializedName(value ="gaps")
-    private List<Integer> gaps;
+    private String gaps;
 
     public String getGenerate_time() {
         return generate_time;
@@ -286,27 +285,27 @@ public class RenderDataDTO {
         this.pensionGapPerMonth = pensionGapPerMonth;
     }
 
-    public List<Integer> getSalaries() {
+    public String getSalaries() {
         return salaries;
     }
 
-    public void setSalaries(List<Integer> salaries) {
+    public void setSalaries(String salaries) {
         this.salaries = salaries;
     }
 
-    public List<Integer> getPensions() {
+    public String getPensions() {
         return pensions;
     }
 
-    public void setPensions(List<Integer> pensions) {
+    public void setPensions(String pensions) {
         this.pensions = pensions;
     }
 
-    public List<Integer> getGaps() {
+    public String getGaps() {
         return gaps;
     }
 
-    public void setGaps(List<Integer> gaps) {
+    public void setGaps(String gaps) {
         this.gaps = gaps;
     }
 }
