@@ -1,10 +1,8 @@
 package com.lanyu.miniprogram.bean;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @Author yansong
@@ -12,7 +10,8 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name="feedback")
-public class UserFeedback {
+@IdClass(IdTimeKeys.class)
+public class UserFeedback implements Serializable {
     @Id
     @NotNull
     @Column(name = "user_id")
