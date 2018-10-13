@@ -44,17 +44,17 @@ public class RenderDataDTO {
     @SerializedName(value ="planMonths")
     private int planMonths;
     @SerializedName(value ="retirementSalaryPerMonth")
-    private int retirementSalaryPerMonth;
+    private double retirementSalaryPerMonth;
     @SerializedName(value ="pensionBasicSocialInsurance")
-    private int pensionBasicSocialInsurance;
+    private double pensionBasicSocialInsurance;
     @SerializedName(value ="pensionPersonalAccount")
-    private int pensionPersonalAccount;
+    private double pensionPersonalAccount;
     @SerializedName(value ="pensionTransition")
-    private int pensionTransition;
+    private double pensionTransition;
     @SerializedName(value ="companyAnnuity")
-    private int companyAnnuity;
+    private double companyAnnuity;
     @SerializedName(value ="pensionInFirstRetirementMonth")
-    private int pensionInFirstRetirementMonth;
+    private double pensionInFirstRetirementMonth;
     @SerializedName(value ="pensionReplacementRate")
     private double pensionReplacementRate;
     @SerializedName(value ="rateOfSocialInsurancePlusAnnuity")
@@ -62,13 +62,28 @@ public class RenderDataDTO {
     @SerializedName(value ="gapOfPensionReplacementRateValue")
     private double gapOfPensionReplacementRateValue;
     @SerializedName(value ="pensionGapPerMonth")
-    private int pensionGapPerMonth;
+    private double pensionGapPerMonth;
     @SerializedName(value ="salaries")
     private List<Integer> salaries;
     @SerializedName(value ="pensions")
     private List<Integer> pensions;
     @SerializedName(value ="gaps")
     private List<Integer> gaps;
+
+    private List<Integer> xArray;
+    // 姓名 用户姓名
+    private String manager_name;
+    // 手机号
+    private String phone;
+    // 所在机构, 用户所在的单位、企业 如：XX人寿、XX银行
+    private String enterprise;
+    // 分支机构 用户所在的单位、企业的分支部门 如：XX分公司、XX分行
+    private String enterprise_branch;
+    // 职位名称 | 用户的职位、职称等 如：客户经理、理财经理
+    private String title;
+
+    private String wechatId;
+
 
     public String getGenerate_time() {
         return generate_time;
@@ -206,48 +221,52 @@ public class RenderDataDTO {
         this.planMonths = planMonths;
     }
 
-    public int getRetirementSalaryPerMonth() {
+    public double getRetirementSalaryPerMonth() {
         return retirementSalaryPerMonth;
     }
 
-    public void setRetirementSalaryPerMonth(int retirementSalaryPerMonth) {
+    public void setRetirementSalaryPerMonth(double retirementSalaryPerMonth) {
         this.retirementSalaryPerMonth = retirementSalaryPerMonth;
     }
 
-    public int getPensionBasicSocialInsurance() {
+    public double getPensionBasicSocialInsurance() {
         return pensionBasicSocialInsurance;
     }
 
-    public void setPensionBasicSocialInsurance(int pensionBasicSocialInsurance) {
+    public void setPensionBasicSocialInsurance(double pensionBasicSocialInsurance) {
         this.pensionBasicSocialInsurance = pensionBasicSocialInsurance;
     }
 
-    public int getPensionPersonalAccount() {
+    public double getPensionPersonalAccount() {
         return pensionPersonalAccount;
     }
 
-    public void setPensionPersonalAccount(int pensionPersonalAccount) {
+    public void setPensionPersonalAccount(double pensionPersonalAccount) {
         this.pensionPersonalAccount = pensionPersonalAccount;
     }
 
-    public int getPensionTransition() {
+    public double getPensionTransition() {
         return pensionTransition;
     }
 
-    public void setPensionTransition(int pensionTransition) {
+    public void setPensionTransition(double pensionTransition) {
         this.pensionTransition = pensionTransition;
     }
 
-    public int getCompanyAnnuity() {
+    public double getCompanyAnnuity() {
         return companyAnnuity;
     }
 
-    public void setCompanyAnnuity(int companyAnnuity) {
+    public void setCompanyAnnuity(double companyAnnuity) {
         this.companyAnnuity = companyAnnuity;
     }
 
-    public int getPensionInFirstRetirementMonth() {
+    public double getPensionInFirstRetirementMonth() {
         return pensionInFirstRetirementMonth;
+    }
+
+    public void setPensionInFirstRetirementMonth(double pensionInFirstRetirementMonth) {
+        this.pensionInFirstRetirementMonth = pensionInFirstRetirementMonth;
     }
 
     public void setPensionInFirstRetirementMonth(int pensionInFirstRetirementMonth) {
@@ -278,11 +297,11 @@ public class RenderDataDTO {
         this.gapOfPensionReplacementRateValue = gapOfPensionReplacementRateValue;
     }
 
-    public int getPensionGapPerMonth() {
+    public double getPensionGapPerMonth() {
         return pensionGapPerMonth;
     }
 
-    public void setPensionGapPerMonth(int pensionGapPerMonth) {
+    public void setPensionGapPerMonth(double pensionGapPerMonth) {
         this.pensionGapPerMonth = pensionGapPerMonth;
     }
 
@@ -308,5 +327,61 @@ public class RenderDataDTO {
 
     public void setGaps(List<Integer> gaps) {
         this.gaps = gaps;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEnterprise() {
+        return enterprise;
+    }
+
+    public void setEnterprise(String enterprise) {
+        this.enterprise = enterprise;
+    }
+
+    public String getEnterprise_branch() {
+        return enterprise_branch;
+    }
+
+    public void setEnterprise_branch(String enterprise_branch) {
+        this.enterprise_branch = enterprise_branch;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public List<Integer> getxArray() {
+        return xArray;
+    }
+
+    public void setxArray(List<Integer> xArray) {
+        this.xArray = xArray;
+    }
+
+    public String getWechatId() {
+        return wechatId;
+    }
+
+    public void setWechatId(String wechatId) {
+        this.wechatId = wechatId;
     }
 }

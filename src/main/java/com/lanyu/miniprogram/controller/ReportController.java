@@ -9,6 +9,7 @@ import com.lanyu.miniprogram.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +38,9 @@ public class ReportController {
 
     @Autowired
     RenderDataAdapterService adapterService;
+
+    @Autowired
+    ReportService reportService;
 
     /**
      * @param wechatId
@@ -105,7 +109,7 @@ public class ReportController {
     @RequestMapping(path = "/generateReport", method = RequestMethod.POST)
     public SingleResultResponse generateReport(
             @RequestBody String json
-    ) {
+    ) throws IOException {
         Gson gson = new GsonBuilder().registerTypeAdapter(List.class, new JsonDeserializer<List<?>>() {
             @Override
             public List<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
@@ -118,9 +122,8 @@ public class ReportController {
         }).create();
 
         RenderDataDTO renderDataDTO = gson.fromJson(json, RenderDataDTO.class);
-        RenderData renderData = adapterService.getDataThatStoredInMysql(renderDataDTO);
-        System.out.println(renderData);
+        RenderDataDTO data = adapterService.inflateData(renderDataDTO);
 
-        return new SingleResultResponse(adapterService.getDataThatCanBeConvertToJson(renderData));
+        return new SingleResultResponse(reportService.getReport(data));
     }
 }

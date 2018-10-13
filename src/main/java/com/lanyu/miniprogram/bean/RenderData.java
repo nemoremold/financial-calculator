@@ -8,6 +8,7 @@ import java.util.List;
  * @author i343746
  */
 public class RenderData {
+    private String wechatId;
     @SerializedName(value ="generate_time")
     private String generate_time;
     @SerializedName(value ="avatar_url")
@@ -43,17 +44,17 @@ public class RenderData {
     @SerializedName(value ="planMonths")
     private int planMonths;
     @SerializedName(value ="retirementSalaryPerMonth")
-    private int retirementSalaryPerMonth;
+    private double retirementSalaryPerMonth;
     @SerializedName(value ="pensionBasicSocialInsurance")
-    private int pensionBasicSocialInsurance;
+    private double pensionBasicSocialInsurance;
     @SerializedName(value ="pensionPersonalAccount")
-    private int pensionPersonalAccount;
+    private double pensionPersonalAccount;
     @SerializedName(value ="pensionTransition")
-    private int pensionTransition;
+    private double pensionTransition;
     @SerializedName(value ="companyAnnuity")
-    private int companyAnnuity;
+    private double companyAnnuity;
     @SerializedName(value ="pensionInFirstRetirementMonth")
-    private int pensionInFirstRetirementMonth;
+    private double pensionInFirstRetirementMonth;
     @SerializedName(value ="pensionReplacementRate")
     private double pensionReplacementRate;
     @SerializedName(value ="rateOfSocialInsurancePlusAnnuity")
@@ -61,13 +62,21 @@ public class RenderData {
     @SerializedName(value ="gapOfPensionReplacementRateValue")
     private double gapOfPensionReplacementRateValue;
     @SerializedName(value ="pensionGapPerMonth")
-    private int pensionGapPerMonth;
+    private double pensionGapPerMonth;
     @SerializedName(value ="salaries")
     private String salaries;
     @SerializedName(value ="pensions")
     private String pensions;
     @SerializedName(value ="gaps")
     private String gaps;
+
+    public String getWechatId() {
+        return wechatId;
+    }
+
+    public void setWechatId(String wechatId) {
+        this.wechatId = wechatId;
+    }
 
     public String getGenerate_time() {
         return generate_time;
@@ -205,51 +214,51 @@ public class RenderData {
         this.planMonths = planMonths;
     }
 
-    public int getRetirementSalaryPerMonth() {
+    public double getRetirementSalaryPerMonth() {
         return retirementSalaryPerMonth;
     }
 
-    public void setRetirementSalaryPerMonth(int retirementSalaryPerMonth) {
+    public void setRetirementSalaryPerMonth(double retirementSalaryPerMonth) {
         this.retirementSalaryPerMonth = retirementSalaryPerMonth;
     }
 
-    public int getPensionBasicSocialInsurance() {
+    public double getPensionBasicSocialInsurance() {
         return pensionBasicSocialInsurance;
     }
 
-    public void setPensionBasicSocialInsurance(int pensionBasicSocialInsurance) {
+    public void setPensionBasicSocialInsurance(double pensionBasicSocialInsurance) {
         this.pensionBasicSocialInsurance = pensionBasicSocialInsurance;
     }
 
-    public int getPensionPersonalAccount() {
+    public double getPensionPersonalAccount() {
         return pensionPersonalAccount;
     }
 
-    public void setPensionPersonalAccount(int pensionPersonalAccount) {
+    public void setPensionPersonalAccount(double pensionPersonalAccount) {
         this.pensionPersonalAccount = pensionPersonalAccount;
     }
 
-    public int getPensionTransition() {
+    public double getPensionTransition() {
         return pensionTransition;
     }
 
-    public void setPensionTransition(int pensionTransition) {
+    public void setPensionTransition(double pensionTransition) {
         this.pensionTransition = pensionTransition;
     }
 
-    public int getCompanyAnnuity() {
+    public double getCompanyAnnuity() {
         return companyAnnuity;
     }
 
-    public void setCompanyAnnuity(int companyAnnuity) {
+    public void setCompanyAnnuity(double companyAnnuity) {
         this.companyAnnuity = companyAnnuity;
     }
 
-    public int getPensionInFirstRetirementMonth() {
+    public double getPensionInFirstRetirementMonth() {
         return pensionInFirstRetirementMonth;
     }
 
-    public void setPensionInFirstRetirementMonth(int pensionInFirstRetirementMonth) {
+    public void setPensionInFirstRetirementMonth(double pensionInFirstRetirementMonth) {
         this.pensionInFirstRetirementMonth = pensionInFirstRetirementMonth;
     }
 
@@ -277,11 +286,11 @@ public class RenderData {
         this.gapOfPensionReplacementRateValue = gapOfPensionReplacementRateValue;
     }
 
-    public int getPensionGapPerMonth() {
+    public double getPensionGapPerMonth() {
         return pensionGapPerMonth;
     }
 
-    public void setPensionGapPerMonth(int pensionGapPerMonth) {
+    public void setPensionGapPerMonth(double pensionGapPerMonth) {
         this.pensionGapPerMonth = pensionGapPerMonth;
     }
 

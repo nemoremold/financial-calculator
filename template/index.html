@@ -1,0 +1,499 @@
+<!-- 
+    render：
+    1. 报告日期：2018/09/10              {{option.generate_time}} 
+    2. 头像链接：http://url.com          {{option.avatar_url}} 
+    3. 姓名：最好不要超过5个字             {{option.name}} 
+    4. 称呼：先生；女士                   {{option.gender}} 
+    5. 年龄：数字                        {{option.age}} 
+    6. 参加工作时间：2018/09/10           {{option.join_time}}
+    7. 法定退休年龄：岁                   {{option.legal_retire_age}} 
+    8. 预计退休年龄：岁                   {{option.expected_retire_age}} 
+    9. 已缴社保年数：年                   {{option.years_insure}} 
+    10. 社保参保地：                     {{option.location}}
+    11. 参保类型：                       {{option.type_of_insure}}
+    12. 税前月收入：元                    {{option.salary_with_tax}} 
+    13. 当地上年度在岗职工月平均工资：      {{option.local_salary}} 
+    14. 当前个人社保账户余额：元            {{option.remaining_insure}} 
+    15. 经理姓名：                       {{option.manager_name}}
+    16. 公司名称：                       {{option.enterprise}}
+    17. 支行名称：                       {{option.enterprise_branch}}
+    18. 手机：                          {{option.phone}}
+    19. 职位：                          {{option.title}}
+    object
+    
+ -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <style type="text/css">
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.1.0/echarts-en.common.js"></script>
+        <script src='https://unpkg.com/vue@2.0.5/dist/vue.js'></script>
+        <link rel="stylesheet" href="./test.css">
+        <style type="text/css">
+            body {
+                margin: 0;
+            }
+            .content {
+                width: 820px;
+                height: 1160px;
+                margin: 0 auto;
+                background-color: #fafafa;
+            }
+            .main-container{
+                width: 820px;
+                height: 1160px;
+                display: -webkit-flex;
+                display: flex;
+                justify-content: flex-start;
+                align-items: stretch
+            }
+            .aside {
+                order: 0;
+                flex-basis: 205px;
+                display: -webkit-flex;
+                display: flex;
+                flex-direction: column;
+            }
+            .aside-header{
+                order: 0;
+                height: 190px;
+                background-color: #f1f2f3;
+                justify-content:center;
+            }
+            .avatar-bg {
+                background-color: #469f9b; 
+                width:85%; 
+                height: 220px;
+                z-index:100;
+                border-radius: 0px 0px 5px 5px;
+                display: flex; 
+                justify-content:center;
+                margin: 0 auto;
+                position:relative;
+            }
+            .avatar {
+                width: 130px;
+                height: 130px;
+                -moz-border-radius: 65px;
+                -webkit-border-radius: 65px;
+                border-radius: 65px;
+                z-index:120;
+                position:absolute;
+                bottom:-30px;
+            }
+            .circle {
+                width: 150px;
+                height: 150px;
+                background: #469f9b;
+                -moz-border-radius: 65px;
+                -webkit-border-radius: 65px;
+                border-radius: 70px;
+                position:absolute;
+                bottom:-45px;
+            }
+            .aside-main{
+                order: 1;
+                flex-grow: 1;
+                background-color: #58595a;
+                display: flex;
+                flex-direction: column;
+                font-family: "Titillium Web", sans-serif;
+            }
+            .aside-info-section {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                align-items:center;
+                font-family: 'Titillium Web', sans-serif;
+            }
+            .info{
+                order: 1;
+                flex-grow: 1;
+                background-color: #f1f2f3;
+                display: -webkit-flex;
+                display: flex;
+                flex-direction: column;
+            }
+            .header {
+                order: 0;
+                height: 190px;
+                display: -webkit-flex;
+                display: flex;
+                flex-direction: column;
+                margin: 0 auto;
+                position:relative;
+            }
+            .generate-time {
+                margin: 20px 0 0 0;
+                text-align: right;
+            }
+            .title{
+                border-color:rgb(250,250,250);
+                width: 540px;
+                height: 110px;
+                border-width: thick;
+                border-style: solid;
+                margin-top: 30px;
+                display: -webkit-flex; /* Safari */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .main {
+                order: 1;
+                margin: 0px; 
+                padding:0px;
+                background: #fdfefe;
+                flex-grow: 1;
+            }
+            .info-section {
+                height: 135px;
+                width: 565px;
+                display: flex;
+                align-items: stretch;
+            }
+            .footer {
+                order: 2;
+                height: 190px;
+                background-color: #f1f2f3;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app" class="content">
+            <div class="main-container">
+                <div class="aside">
+                    <div class="aside-header">
+                        <div class="avatar-bg">
+                            <div style="width: 100%; padding: 10px 20px 20px 20px">
+                                <h2 style="color: #fafafa; background-color: #469f9b; margin-top: 3px;
+                                font-size: 23px;">
+                                    可学教育
+                                </h2>
+                                <div style="padding-top: 3px;">
+                                    <span style="color: #fafafa; padding-top: 3px;
+                                    font-size: 15px;">
+                                        KeXue Education
+                                    </span>
+                                </div>
+                                
+                            </div>
+                            <img v-bind:id="option.avatar_url" v-bind:src="option.avatar_url" class="avatar" alt="">
+                            <div class="circle">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="aside-main" style="padding: 90px 0 0 0;">
+                        <div class="aside-info-section" style="flex: 0; margin-bottom: 20px">
+                            <img src="./assets/idcard.png" alt="" style="width:40px">
+                            <div style="display:flex;justify-content: center;
+                            align-items:baseline; width: 100%">
+                                <span style="color: #fafafa; 
+                                font-size: 28px; margin: 10px 4px 0 0" v-bind:id="option.name">{{option.name}}</span>
+                                <span style="color: #fafafa; 
+                                font-size: 12px; margin-top: 10px" v-bind:id="option.gender">{{option.gender}}</span>
+                            </div>
+                            <span style="color: #fafafa; 
+                            font-size: 20px; margin-top: 10px"><span v-bind:id="option.age">{{option.age}}</span> 岁</span>
+                        </div>
+                        <div class="aside-info-section" style="flex: 0; margin-bottom: 5px">
+                            <img src="./assets/clock.png" alt="" style="width:40px">
+                            <span style="color: #fafafa; 
+                            font-size: 16px; margin-top:10px">参加工作时间</span>
+                            <span style="color: #fafafa; 
+                            font-size: 14px; margin-top: 5px; margin-bottom: 5px" v-bind:id="option.join_time">{{option.join_time}}</span>
+                            
+                            <span style="color: #fafafa; 
+                            font-size: 16px; margin-top:10px">法定退休年龄</span>
+                            <span style="color: #fafafa; 
+                            font-size: 14px; margin-top: 5px; margin-bottom: 5px"><span v-bind:id="option.legal_retire_age">{{option.legal_retire_age}}</span> 岁</span>
+
+                            <span style="color: #fafafa; 
+                            font-size: 16px; margin-top:10px">预计退休年龄</span>
+                            <span style="color: #fafafa; 
+                            font-size: 14px; margin-top: 5px; margin-bottom: 5px"><span v-bind:id="option.expected_retire_age">{{option.expected_retire_age}}</span> 岁</span>
+
+                            <span style="color: #fafafa; 
+                            font-size: 16px; margin-top:10px">已缴社保年数</span>
+                            <span style="color: #fafafa; 
+                            font-size: 14px; margin-top: 5px; margin-bottom: 5px"> <span v-bind:id="option.years_insure">{{option.years_insure}}</span> 年</span>
+                        </div>
+                        <div class="aside-info-section" style="flex: 0; margin-bottom: 10px">
+                            <img src="./assets/location.png" alt="" style="width:40px">
+                            <span style="color: #fafafa; 
+                            font-size: 16px; margin-top:10px">社保参保地</span>
+                            <span style="color: #fafafa; 
+                            font-size: 14px; margin-top: 5px; margin-bottom: 5px" v-bind:id="option.location">{{option.location}}</span>
+                            <span style="color: #fafafa; 
+                            font-size: 16px; margin-top:10px">参保类型</span>
+                            <span style="color: #fafafa; 
+                            font-size: 14px; margin-top: 5px; margin-bottom: 5px" v-bind:id="option.type_of_insure">{{option.type_of_insure}}</span>
+                        </div>
+                        <div class="aside-info-section">
+                            <img src="./assets/transfer.png" alt="" style="width:40px">
+                            <span style="color: #fafafa; 
+                            font-size: 16px; margin-top:10px">税前月收入</span>
+                            <span style="color: #fafafa; 
+                            font-size: 14px; margin-top: 5px; margin-bottom: 5px"> <span v-bind:id="option.salary_with_tax">{{option.salary_with_tax}}</span> 元</span>
+                            <span style="color: #fafafa; 
+                            font-size: 16px; margin-top:10px; width: 150px; text-align: center">当地上年度在岗职工月平均工资</span>
+                            <span style="color: #fafafa; 
+                            font-size: 14px; margin-top: 5px; margin-bottom: 5px"> <span v-bind:id="option.local_salary">{{option.local_salary}}</span> 元/月</span>
+                            <span style="color: #fafafa; 
+                            font-size: 16px; margin-top:10px">当前个人社保账户余额</span>
+                            <span style="color: #fafafa; 
+                            font-size: 14px; margin-top: 5px; margin-bottom: 5px"><span v-bind:id="option.remaining_insure">{{option.remaining_insure}}</span> 元</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="header">
+                        <div class="generate-time">
+                            报告日期：<span v-bind:id="option.generate_time">{{option.generate_time}}</span>
+                        </div>
+                        <div class="title">                            
+                            <img src="./assets/log.png" alt="" style="height: 85px; width: 85px">
+                            <h1 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; 
+                            font-weight: bold;
+                            color: #58595a;" >专业版</h1>
+                            <h1 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; 
+                            font-weight: bold;
+                            color: #469f9b;" >养老金测算报告</h1>
+                        </div>
+                    </div>
+                    <div class="main">
+                        <div class="container" style="height: 780px">
+                            <ul>
+                                <li>
+                                    <h2>退休首年月领养老金明细与重要指标</h2>
+                                    <div class="info-section" style="height: 90px">
+                                        <div style="flex: 4; display: flex; justify-content: stretch;">
+                                            <div style="flex: 2; display: flex; flex-direction: column; justify-content: stretch;">
+                                                <div style="flex: 1; display: flex; justify-content: stretch; align-items:flex-end"> 
+                                                    <span style="width: 100%; font-size: 14px">基础养老金领取比例</span>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end"> 
+                                                    <span style="width: 100%; font-size: 14px">缴费工资指数</span>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end"> 
+                                                    <span style="width: 100%; font-size: 14px">计发月数</span>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end"> 
+                                                    <span style="width: 100%; font-size: 14px; font-weight: bolder">法定退休前月收入(参考)</span>
+                                                </div>
+                                            </div>
+                                            <div style="flex: 1; display: flex; flex-direction: column; justify-content: stretch;">
+                                                <div style="flex: 1; display: flex; justify-content: stretch; align-items:flex-end"> 
+                                                    <span style="text-align: right; width: 100%; font-size: 14px">{{option.ratioOfBasicReceivePension}} %</span>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end"> 
+                                                    <span style="text-align: right; width: 100%; font-size: 14px">{{option.pointAverage}}</span>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end"> 
+                                                    <span style="text-align: right; width: 100%; font-size: 14px">{{option.planMonths}}</span>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end"> 
+                                                    <div style="text-align: right; width: 100%; font-size: 14px; font-weight: bolder;">
+                                                        <span style=" color: #469f9b">{{option.retirementSalaryPerMonth}}</span> <span>元</span>
+                                                    </div>
+                                                </div>
+                                            </div>                                        
+                                        </div>
+                                        <div style="flex: 2;">
+                                            <div id="chart1" style="width: 100%;height:100px; margin: 0%"></div>
+                                        </div>
+                                        <div style="flex: 3; display: flex; justify-content: stretch;">
+                                            <div style="flex: 5; display: flex; flex-direction: column; justify-content: stretch;">
+                                                <div style="flex: 1; display: flex; justify-content: stretch; align-items:flex-end"> 
+                                                    <div style="width: 12px; height: 12px; background: #B8DE9E; margin:0 5px 2px 0"></div>
+                                                    <span style="width: 100%; font-size: 12px;">社保-基础养老金</span>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end"> 
+                                                    <div style="width: 12px; height: 12px; background: #8FACD3; margin:0 5px 2px 0"></div>
+                                                    <span style="width: 100%; font-size: 12px">社保-个人账户养老金</span>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end"> 
+                                                    <div style="width: 12px; height: 12px; background: #CF7477; margin:0 5px 2px 0"></div>
+                                                    <span style="width: 100%; font-size: 12px">社保-过渡型养老金</span>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end">
+                                                    <div style="width: 12px; height: 12px; background: #9FDCDF; margin:0 5px 2px 0"></div> 
+                                                    <span style="width: 100%; font-size: 12px;">企业年金</span>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end; margin-top: 10px"> 
+                                                    <span style="width: 100%; font-size: 14px; font-weight: bolder">养老金合计</span>
+                                                </div>
+                                            </div>
+                                            <div style="flex: 2; display: flex; flex-direction: column; justify-content: stretch;">
+                                                <div style="flex: 1; display: flex; align-items:flex-end"> 
+                                                    <div style="text-align: right; width: 100%; font-size: 12px; font-weight: bolder;">
+                                                        <span style=" color: #B8DE9E">{{option.pensionBasicSocialInsurance}}</span> <span>元</span>
+                                                    </div>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end"> 
+                                                    <div style="text-align: right; width: 100%; font-size: 12px; font-weight: bolder;">
+                                                        <span style=" color: #8FACD3">{{option.pensionPersonalAccount}}</span> <span>元</span>
+                                                    </div>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end"> 
+                                                    <div style="text-align: right; width: 100%; font-size: 12px; font-weight: bolder;">
+                                                        <span style=" color: #CF7477">{{option.pensionTransition}}</span> <span>元</span>
+                                                    </div>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end"> 
+                                                    <div style="text-align: right; width: 100%; font-size: 12px; font-weight: bolder;">
+                                                        <span style=" color: #9FDCDF">{{option.companyAnnuity}}</span> <span>元</span>
+                                                    </div>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end; padding: 0; margin: 0; margin-top: 10px"> 
+                                                    <div style="text-align: right; width: 100%; font-size: 14px; font-weight: bolder; display: flex; align-items:center">
+                                                        <span style="color: #469f9b; flex: 1">{{option.pensionInFirstRetirementMonth}}</span>
+                                                        <span style="flex: 1;">元</span>
+                                                    </div>
+                                                </div>
+                                            </div>                                        
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <h2>养老金替代率与缺口计算</h2>
+                                    <div class="info-section" style="height: 200px">
+                                        <div style="flex: 3;">
+                                            <div style="display: flex;  align-items: center; margin-top: 10px">
+                                                <span style="font-size: 10px; margin-right: 5px">养老金替代率 = </span>
+                                                <div style="display: flex; flex-direction: column;font-size: 10px">
+                                                    <span style="border-bottom: 1px solid #000000;">劳动者退休时的养老金领取水平</span>
+                                                    <span>退休前工资收入水平</span>
+                                                </div>
+                                                <span style="font-size: 10px; margin-left: 5px">X 100%</span>
+                                            </div>
+                                            <div style="margin:20px 10px 0 0;">
+                                                <table style="width: 100%; font-size: 11px;">
+                                                    <tr style="background:cadetblue">
+                                                        <th style="color: white">养老金替代率</th>
+                                                        <th style="text-align: center;color: white">退休后生活水平</th>
+                                                    </tr>
+                                                    <tr style="margin-top: 5px">
+                                                        <td>70% 以上</td>
+                                                        <td>世界银行建议：不低于70%，可基本维持退休前的生活水平</td>
+                                                    </tr>
+                                                    <tr style="margin-top: 5px; background:rgb(178, 215, 216)">
+                                                        <td>60%-70%</td>
+                                                        <td>可基本维持生活水平</td>
+                                                    </tr>
+                                                    <tr style="margin-top: 5px">
+                                                        <td>55%以上</td>
+                                                        <td>国际劳工组织在《社会保障最低标准公约》中规定的养老金最低替代率</td>
+                                                    </tr>
+                                                    <tr style="margin-top: 5px; background:rgb(178, 215, 216)">
+                                                        <td>低于50%</td>
+                                                        <td>生活水平较退休前严重下降</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div style="flex: 2; display: flex; justify-content: stretch;">
+                                            <div style="flex: 3; display: flex; flex-direction: column; justify-content: stretch; margin-top: 20px">
+                                                <div style="flex: 1; display: flex; justify-content: stretch; align-items:flex-end"> 
+                                                    <span style="width: 100%; font-size: 12px">养老金替代率：目标值</span>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end"> 
+                                                    <span style="width: 100%; font-size: 12px">养老金替代率：社保+年金</span>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end"> 
+                                                    <span style="width: 100%; font-size: 12px">养老金替代率：缺口值</span>
+                                                </div>
+                                                <div style="flex: 5; display: flex; align-items:center"> 
+                                                    <span style="width: 100%; font-size: 13px; font-weight: bolder">法定退休时<br/>首年养老金月度缺口</span>
+                                                </div>
+                                            </div>
+                                            <div style="flex: 1; display: flex; flex-direction: column; justify-content: stretch; margin-top: 20px">
+                                                <div style="flex: 1; display: flex; justify-content: stretch; align-items:flex-end"> 
+                                                    <span style="text-align: right; width: 100%; font-size: 12px">{{option.pensionReplacementRate}} %</span>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end"> 
+                                                    <span style="text-align: right; width: 100%; font-size: 12px">{{option.rateOfSocialInsurancePlusAnnuity}} %</span>
+                                                </div>
+                                                <div style="flex: 1; display: flex; align-items:flex-end"> 
+                                                    <span style="text-align: right; width: 100%; font-size: 12px">{{option.gapOfPensionReplacementRateValue}} %</span>
+                                                </div>
+                                                <div style="flex: 5; display: flex; align-items:center"> 
+                                                    <div style="text-align: right; width: 100%; font-size: 13px; font-weight: bolder;">
+                                                        <span style=" color: #469f9b">{{option.pensionGapPerMonth}}</span> <span>元</span>
+                                                    </div>
+                                                </div>
+                                            </div>                                        
+                                        </div>
+                                        
+                                    </div>
+                                </li>
+                                <li>
+                                    <h2>养老金缺口示意图</h2>
+                                    <div class="info-section" style="margin: 0; height: 180px;">
+                                        <div id="chart2" style="width: 100%;height:180px; margin: 0%"></div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <h2>养老金分期准备计划</h2>
+                                    <div class="info-section" style="display: flex; justify-content: center">
+                                        <div style="margin:20px 0 0;">
+                                            <table style="width: 300px; font-size: 13px;font-weight: bolder">
+                                                <tr style="margin-top: 5px;">
+                                                    <td><span style="color: red;">60岁</span> 退休时养老金总缺口</td>
+                                                    <td style="text-align: right">123456 元</td>
+                                                </tr>
+                                                <tr style="margin-top: 5px">
+                                                    <td>补充养老金计划准备年数</td>
+                                                    <td style="text-align: right">12 年</td>
+                                                </tr>
+                                                <tr style="margin-top: 5px">
+                                                    <td>每年准备补充养老金所需金额</td>
+                                                    <td style="text-align: right">12345 元</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="footer">
+                        <div style="display:flex;justify-content: center;
+                        flex-direction: column; width: 100%; flex: 1; align-items: center">
+                            <img src="./assets/mpcode.png" alt="" style="width: 120px">
+                            <img src="./assets/search2.png" alt="" style="width: 80px; margin: 10px 0 5px 0">
+                            <img src="./assets/serach1.png" alt="" style="width: 120px">
+                        </div>
+                        <div class="aside-info-section" style="flex: 1; align-items:flex-start; padding: 0 20px 0 0"> 
+                            <div style="display:flex;justify-content: left;;
+                            align-items:baseline; width: 100%">
+                                <span style="color: #58595a; 
+                                font-size: 32px; margin: 10px 30px 0 0" v-bind:id="option.manager_name">{{option.manager_name}}</span>
+                                <span style="color: #58595a; 
+                                font-size: 20px;" v-bind:id="option.title">{{option.title}}</span>
+                            </div>
+                            <span style="color: #58595a; 
+                            font-size: 20px; margin-top: 5px" v-bind:id="option.enterprise">{{option.enterprise}}</span>
+                            <span style="color: #58595a; 
+                            font-size: 20px; margin-top: 5px" v-bind:id="option.enterprise_branch">{{option.enterprise_branch}}</span>
+                            <span style="color: #58595a; 
+                            font-size: 20px; margin-top: 5px">手机： <span v-bind:id="option.phone">{{option.phone}}</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            
+        </script>
+    </body>
+
+
+</html>
