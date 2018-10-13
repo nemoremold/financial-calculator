@@ -1,6 +1,7 @@
 package com.lanyu.miniprogram.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lanyu.miniprogram.bean.Report;
 import com.lanyu.miniprogram.dto.TemplateDataDTO;
 import com.lanyu.miniprogram.repository.ReportDataRepository;
 import com.lanyu.miniprogram.repository.ReportRepository;
@@ -26,18 +27,47 @@ public class ReportService {
     @Autowired
     private ReportRepository reportRepository;
 
+    enum Info{
+        SUCCESS("success"),
+        FAILED_WHEN_RENDER("failed when rendering"),
+        FAILED_WHEN_EXECUTING("failed when execute shell"),
+        FAILED_WITH_MISS_PIC_FILE("failed with missing pic file"),
+        FAILED_WHEN_STORED_IN_DB("failed when writing in DB");
+
+
+        public String msg;
+
+        Info(String msg) {
+            this.msg = msg;
+        }
+
+        @Override
+        public String toString() {
+            return msg;
+        }
+    }
+
     Logger logger = LoggerFactory.getLogger(ReportService.class);
+
+    public Report storeReport(String base64String, String wechatId, String timestamp){
+        Report report = new Report();
+        report.setPicture(base64String.getBytes());
+        report.setTimestamp(timestamp);
+        report.setWechatId(wechatId);
+
+        return reportRepository.save(report);
+    }
 
     /**
      * 执行脚本，获得图片的base64转码
      * @param data render的数据
-     * @return base64字符串
+     * @return 成功信息
      * @throws IOException
      */
     public String getReport(TemplateDataDTO data) throws IOException {
         Process process = null;
         String total = "";
-        String timestamp = Long.toString(new Date().getTime());
+        String timestamp = data.getTimestamp();
         String filename = data.getWechatId() + timestamp;
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -52,11 +82,14 @@ public class ReportService {
             }
             input.close();
             logger.info("End to render pic, id is {}, Time is {}", data.getWechatId(), timestamp);
+        } catch (Exception e){
+            return Info.FAILED_WHEN_EXECUTING.toString();
         }
-        catch (Exception e){}
 
-        if(total.contains("Error"))
+        if(total.contains("Error")) {
             logger.error("When rendering pic, something wrong: {}", total);
+            return Info.FAILED_WHEN_RENDER.toString();
+        }
 
         File file = new File("./template/" + filename + ".jpg");
         byte[] fileContent = null;
@@ -66,7 +99,7 @@ public class ReportService {
 
         if(fileContent == null){
             logger.error("When convert file to string, bytes array is null");
-            return null;
+            return Info.FAILED_WITH_MISS_PIC_FILE.toString();
         }
 
         String encoded = Base64.getEncoder().encodeToString(fileContent);
@@ -77,6 +110,8 @@ public class ReportService {
             logger.error("{}: Delete operation is failed", file.getName());
         }
 
-        return encoded;
+        return this.storeReport(encoded, data.getWechatId(), data.getTimestamp()) == null?
+                Info.FAILED_WHEN_STORED_IN_DB.toString():
+                Info.SUCCESS.toString();
     }
 }

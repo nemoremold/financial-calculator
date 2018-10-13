@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Table(name="data_item")
 public class ReportData implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @NotNull
     @Column(name = "id")
     private int id;
@@ -72,13 +72,13 @@ public class ReportData implements Serializable {
     private boolean companyAnnuity;
 
     @Column(name = "pension_replacement_rate")
-    private BigDecimal pensionReplacementRate;
+    private double pensionReplacementRate;
 
     @Column(name = "existing_pension")
     private int existingPension;
 
     @Column(name = "pension_benefit_rate")
-    private BigDecimal pensionBenefitRate;
+    private double pensionBenefitRate;
 
     @Column(name = "name")
     private String name;
@@ -230,11 +230,11 @@ public class ReportData implements Serializable {
         this.companyAnnuity = companyAnnuity;
     }
 
-    public BigDecimal getPensionReplacementRate() {
+    public double getPensionReplacementRate() {
         return pensionReplacementRate;
     }
 
-    public void setPensionReplacementRate(BigDecimal pensionReplacementRate) {
+    public void setPensionReplacementRate(double pensionReplacementRate) {
         this.pensionReplacementRate = pensionReplacementRate;
     }
 
@@ -246,11 +246,11 @@ public class ReportData implements Serializable {
         this.existingPension = existingPension;
     }
 
-    public BigDecimal getPensionBenefitRate() {
+    public double getPensionBenefitRate() {
         return pensionBenefitRate;
     }
 
-    public void setPensionBenefitRate(BigDecimal pensionBenefitRate) {
+    public void setPensionBenefitRate(double pensionBenefitRate) {
         this.pensionBenefitRate = pensionBenefitRate;
     }
 

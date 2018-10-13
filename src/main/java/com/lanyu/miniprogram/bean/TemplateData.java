@@ -8,6 +8,7 @@ import java.util.List;
  * @author i343746
  */
 public class TemplateData {
+    private String timestamp;
     private String wechatId;
     @SerializedName(value ="generate_time")
     private String generate_time;

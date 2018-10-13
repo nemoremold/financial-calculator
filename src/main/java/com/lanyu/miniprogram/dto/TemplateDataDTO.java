@@ -9,6 +9,7 @@ import java.util.List;
  * @author i343746
  */
 public class TemplateDataDTO {
+    private String timestamp;
     @SerializedName(value ="generate_time")
     private String generate_time;
     @SerializedName(value ="avatar_url")
@@ -84,6 +85,13 @@ public class TemplateDataDTO {
 
     private String wechatId;
 
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
 
     public String getGenerate_time() {
         return generate_time;

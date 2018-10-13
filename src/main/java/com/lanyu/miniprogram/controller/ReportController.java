@@ -1,18 +1,25 @@
 package com.lanyu.miniprogram.controller;
 
 import com.google.gson.*;
+import com.lanyu.miniprogram.bean.RenderData;
+import com.lanyu.miniprogram.bean.ReportData;
 import com.lanyu.miniprogram.dto.TemplateDataDTO;
 import com.lanyu.miniprogram.dto.RenderDataDTO;
 import com.lanyu.miniprogram.dto.ReportDataDTO;
 import com.lanyu.miniprogram.dto.SingleResultResponse;
+import com.lanyu.miniprogram.repository.ReportDataRepository;
+import com.lanyu.miniprogram.repository.ReportRepository;
 import com.lanyu.miniprogram.service.RenderDataAdapterService;
 import com.lanyu.miniprogram.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -42,6 +49,12 @@ public class ReportController {
     @Autowired
     ReportService reportService;
 
+    @Autowired
+    ReportDataRepository reportDataRepository;
+
+    @Autowired
+    ReportRepository reportRepository;
+
     /**
      * @param wechatId
      * @return
@@ -51,7 +64,7 @@ public class ReportController {
     public SingleResultResponse getReportCountByCompositeKey(
             @RequestParam(required = true) String wechatId
     ) {
-        return new SingleResultResponse(1);
+        return new SingleResultResponse(reportDataRepository.countByWechatId(wechatId));
     }
 
     /**
@@ -65,8 +78,9 @@ public class ReportController {
     public SingleResultResponse getReportByCompositeKey(
             @RequestParam(required = true) String wechatId,
             @RequestParam(required = true) String timestamp
-    ) {
-        return new SingleResultResponse(1);
+    ) throws UnsupportedEncodingException {
+        String base64String = new String(reportRepository.getReportByWechatIdAndTimestamp(wechatId, timestamp).getPicture(), "UTF-8");
+        return new SingleResultResponse(base64String);
     }
 
     /**
@@ -81,15 +95,15 @@ public class ReportController {
             @RequestParam(required = true) String wechatId,
             @RequestParam(required = true) String timestamp
     ) {
-        return new SingleResultResponse(1);
+        return new SingleResultResponse(reportDataRepository.getReportDataByWechatIdAndTimestamp(wechatId, timestamp));
     }
 
     @ResponseBody
     @RequestMapping(path = "/setReportData", method = RequestMethod.POST)
     public SingleResultResponse setReportData(
-            @RequestBody ReportDataDTO reportDataDTO
+            @RequestBody ReportData reportData
     ) {
-        return new SingleResultResponse(reportDataDTO);
+        return new SingleResultResponse(reportDataRepository.save(reportData));
     }
 
     /**
@@ -103,10 +117,31 @@ public class ReportController {
     @RequestMapping(path = "/getReportDataList", method = RequestMethod.GET)
     public SingleResultResponse getReportDataListWithPagination(
             @RequestParam(required = true) String wechatId,
-            @RequestParam(required = true) String top,
-            @RequestParam(required = true) String skip
+            @RequestParam(required = true) int top,
+            @RequestParam(required = true) int skip
     ) {
-        return new SingleResultResponse(1);
+        List<ReportData> reportDataList = reportDataRepository.getAllByWechatIdOrderByTimestamp(wechatId);
+        Collections.sort(reportDataList, new Comparator<ReportData>() {
+            @Override
+            public int compare(ReportData o1, ReportData o2) {
+                long o1Time = Long.parseLong(o1.getTimestamp());
+                long o2Time = Long.parseLong(o2.getTimestamp());
+                return o1Time > o2Time? -1: 1;
+            }
+        });
+
+        List<ReportData> list = new ArrayList<>();
+
+
+        for (int i = top; i < skip; i++) {
+            try{
+                list.add(reportDataList.get(i));
+            }catch (IndexOutOfBoundsException e){
+                break;
+            }
+        }
+
+        return new SingleResultResponse(list);
     }
 
     /**
