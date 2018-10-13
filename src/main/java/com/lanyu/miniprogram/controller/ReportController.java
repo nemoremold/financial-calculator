@@ -2,6 +2,8 @@ package com.lanyu.miniprogram.controller;
 
 import com.google.gson.*;
 import com.lanyu.miniprogram.dto.TemplateDataDTO;
+import com.lanyu.miniprogram.dto.RenderDataDTO;
+import com.lanyu.miniprogram.dto.ReportDataDTO;
 import com.lanyu.miniprogram.dto.SingleResultResponse;
 import com.lanyu.miniprogram.service.RenderDataAdapterService;
 import com.lanyu.miniprogram.service.ReportService;
@@ -80,6 +82,14 @@ public class ReportController {
             @RequestParam(required = true) String timestamp
     ) {
         return new SingleResultResponse(1);
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/setReportData", method = RequestMethod.POST)
+    public SingleResultResponse setReportData(
+            @RequestBody ReportDataDTO reportDataDTO
+    ) {
+        return new SingleResultResponse(reportDataDTO);
     }
 
     /**

@@ -10,20 +10,31 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name="report")
-@IdClass(IdTimeKeys.class)
 public class Report implements Serializable {
     @Id
+    @GeneratedValue
+    @NotNull
+    @Column(name = "id")
+    private int id;
+
     @NotNull
     @Column(name = "user_id")
     private String wechatId;
 
-    @Id
     @NotNull
     @Column(name = "timestamp")
     private String timestamp;
 
     @Column(name = "picture")
     private byte[] picture;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getWechatId() {
         return wechatId;
