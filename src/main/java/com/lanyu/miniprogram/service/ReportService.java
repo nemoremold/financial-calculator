@@ -58,6 +58,29 @@ public class ReportService {
         return reportRepository.save(report);
     }
 
+    public String authShell(String cmd){
+        Process process = null;
+        String total = "";
+        try {
+            logger.info("Begin to auth");
+            process = Runtime.getRuntime().exec(cmd);
+            process.waitFor();
+            BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = "";
+            while ((line = input.readLine()) != null) {
+                total = total + line + "\n";
+            }
+            input.close();
+            logger.info("End to auth");
+        } catch (Exception e){
+            logger.error(Info.FAILED_WHEN_EXECUTING.toString()+": \nexception: {}", e);
+            return Info.FAILED_WHEN_EXECUTING.toString();
+        }
+        logger.info("output: {}", total);
+
+        return total;
+    }
+
     /**
      * 执行脚本，获得图片的base64转码
      * @param data render的数据
@@ -73,7 +96,7 @@ public class ReportService {
         try {
             logger.info("Begin to render pic, id is {}, Time is {}", data.getWechatId(), timestamp);
             String dataJson = objectMapper.writeValueAsString(data);
-            process = Runtime.getRuntime().exec("chmod 777 ./template/generate.sh && ./template/generate.sh " + dataJson + " " + filename);
+            process = Runtime.getRuntime().exec("./template/generate.sh " + dataJson + " " + filename);
             process.waitFor();
             BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line = "";
@@ -86,6 +109,7 @@ public class ReportService {
             logger.error(Info.FAILED_WHEN_EXECUTING.toString()+": {}", e);
             return Info.FAILED_WHEN_EXECUTING.toString();
         }
+        logger.info("output: {}", total);
 
         if(total.contains("Error")) {
             logger.error("When rendering pic, something wrong: {}", total);
