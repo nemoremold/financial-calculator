@@ -50,10 +50,14 @@ public class ReportService {
     Logger logger = LoggerFactory.getLogger(ReportService.class);
 
     public Report storeReport(String base64String, String wechatId, String timestamp){
-        Report report = new Report();
+        Report report = null;
+        report = reportRepository.getReportByWechatIdAndTimestamp(wechatId, timestamp);
+        if (report == null) {
+            report = new Report();
+            report.setTimestamp(timestamp);
+            report.setWechatId(wechatId);
+        }
         report.setPicture(base64String.getBytes());
-        report.setTimestamp(timestamp);
-        report.setWechatId(wechatId);
 
         return reportRepository.save(report);
     }

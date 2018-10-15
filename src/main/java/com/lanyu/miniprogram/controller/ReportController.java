@@ -76,8 +76,11 @@ public class ReportController {
             @RequestParam(required = true) String wechatId,
             @RequestParam(required = true) String timestamp
     ) throws UnsupportedEncodingException {
-        String base64String = new String(reportRepository.getReportByWechatIdAndTimestamp(wechatId, timestamp).getPicture(), "UTF-8");
-        return new SingleResultResponse(base64String);
+        if (reportDataRepository.getReportDataByWechatIdAndTimestamp(wechatId, timestamp) != null) {
+            String base64String = new String(reportRepository.getReportByWechatIdAndTimestamp(wechatId, timestamp).getPicture(), "UTF-8");
+            return new SingleResultResponse(base64String);
+        }
+        return new SingleResultResponse(null);
     }
 
     /**
