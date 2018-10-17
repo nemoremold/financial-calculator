@@ -100,7 +100,7 @@ public class ReportService {
         try {
             logger.info("Begin to render pic, id is {}, Time is {}", data.getWechatId(), timestamp);
             String dataJson = objectMapper.writeValueAsString(data);
-            String base64JsonData = Base64.getEncoder().encodeToString(dataJson.getBytes());
+            String base64JsonData = Base64.getEncoder().encodeToString(dataJson.getBytes("UTF-8"));
             process = Runtime.getRuntime().exec("./template/generate.sh " + base64JsonData + " " + filename);
             process.waitFor();
             BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
