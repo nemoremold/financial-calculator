@@ -7,23 +7,25 @@ import java.io.Serializable;
  */
 public class PayInfo implements Serializable {
     private String appid;
-    private String mch_id;
-    private String device_info; //设备号，小程序传"WEB"
-    private String nonce_str;
-    private String sign;
-    private String sign_type;  //签名类型
-    private String body;
-    //private String detail;
     private String attach;
-    private String out_trade_no;
-    private int total_fee;
-    private String spbill_create_ip;
-    private String time_start;
-    private String time_expire;
-    private String notify_url;
-    private String trade_type; //交易类型,JSAPI
+    private String body;
+    private String device_info; //设备号，小程序传"WEB"
     private String limit_pay;  //指定支付方式，no_credit
+    private String mch_id;
+    private String nonce_str;
+    private String notify_url;
     private String openid;
+    private String out_trade_no;
+    private String sign_type;  //签名类型
+    private String spbill_create_ip;
+    private String time_expire;
+    private String time_start;
+    //private String detail;
+    private String total_fee;
+    private String trade_type; //交易类型,JSAPI
+    private String sign;
+
+
 
     public String getAppid() {
         return appid;
@@ -97,11 +99,11 @@ public class PayInfo implements Serializable {
         this.out_trade_no = out_trade_no;
     }
 
-    public int getTotal_fee() {
+    public String getTotal_fee() {
         return total_fee;
     }
 
-    public void setTotal_fee(int total_fee) {
+    public void setTotal_fee(String total_fee) {
         this.total_fee = total_fee;
     }
 

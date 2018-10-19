@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -23,18 +24,22 @@ import java.util.Random;
 /**
  * @author i343746
  */
+@Service
 public class PayService {
     private final Logger logger = LoggerFactory.getLogger(PayService.class);
 
-    @Value("weixin.mchId")
+    @Value("${weixin.mchId}")
     private String mchId;
-    @Value("weixin.appId")
+    @Value("${weixin.appId}")
     private String appId;
-    @Value("weixin.notifyUrl")
+    @Value("${weixin.notifyUrl}")
     private String notifyUrl;
-    // todo 商户号的账号密码
-    @Value("weixin.appKey")
+    @Value("${weixin.appKey}")
     private String appKey;
+    @Value("${weixin.fee}")
+    private String fee;
+
+    private final int FEE = 1;
 
     @Autowired
     private UserLoginService userLoginService;
@@ -47,112 +52,135 @@ public class PayService {
     // 单位：天
     private final static int TIME_EXPIRE = 2;
 
-    public String prePay(String code, HttpServletRequest request ) throws IOException {
-        String content = null;
-        Map map = new HashMap();
-        ObjectMapper mapper = new ObjectMapper();
+    class PrepayResult{
+        private String status;
+        private String prepayId;
+        private String sign;
 
-        boolean result = true;
-        String info = "";
+        public String getStatus() {
+            return status;
+        }
 
-        logger.info("code: {}", code);
+        public void setStatus(String status) {
+            this.status = status;
+        }
 
-        String openId = userLoginService.getOpenId(code);
+        public String getPrepayId() {
+            return prepayId;
+        }
+
+        public void setPrepayId(String prepayId) {
+            this.prepayId = prepayId;
+        }
+
+        public String getSign() {
+            return sign;
+        }
+
+        public void setSign(String sign) {
+            this.sign = sign;
+        }
+    }
+
+    /**
+     * todo 是否需要传回sign
+     * need return sign
+     * @param openId
+     * @param request
+     * @return
+     * @throws IOException
+     */
+    public PrepayResult prePay(String openId, HttpServletRequest request ) throws Exception {
+        PrepayResult prepayResult = new PrepayResult();
+        prepayResult.setPrepayId("");
+        prepayResult.setSign("");
+        prepayResult.setStatus("Failed");
+
+        logger.info("openId: {}", openId);
 
         if(openId == null || openId.length() == 0) {
-            result = false;
-            info = "获取到openId为空";
-        } else {
-            openId = openId.replace("\"", "").trim();
 
-            String clientIP = CommonUtil.getClientIp(request);
+            logger.error("openid: openId is empty");
+            return prepayResult;
+        }
 
-            logger.info("openId: {}, clientIP: {}", openId, clientIP);
+        String clientIP = CommonUtil.getClientIp(request);
+        logger.info("openId: {}, clientIP: {}", openId, clientIP);
+        String randomNonceStr = RandomUtils.generateMixString(32);
 
-            String randomNonceStr = RandomUtils.generateMixString(32);
-            String prepayId = unifiedOrder(openId, clientIP, randomNonceStr);
+        Map<String, String> unifiedOrderResult = unifiedOrder(openId, clientIP, randomNonceStr);
 
+        String return_code = unifiedOrderResult.get("return_code");
+
+        if(StringUtils.isNotBlank(return_code) && return_code.equals("SUCCESS")) {
+
+            String return_msg = unifiedOrderResult.get("return_msg");
+            if(StringUtils.isNotBlank(return_msg) && !return_msg.equals("OK")) {
+                logger.error("cannot order: the result is empty");
+                return prepayResult;
+            }
+
+            String prepayId = unifiedOrderResult.get("prepay_id");
             logger.info("prepayId: {}", prepayId);
+            String sign = unifiedOrderResult.get("md5");
+            logger.info("sign: {}", sign);
 
             if(StringUtils.isBlank(prepayId)) {
-                result = false;
-                info = "出错了，未获取到prepayId";
-            } else {
-                map.put("prepayId", prepayId);
-                map.put("nonceStr", randomNonceStr);
+                logger.error("prepayId is empty");
+                return prepayResult;
             }
+
+            prepayResult.setPrepayId(prepayId);
+            prepayResult.setPrepayId(sign);
+            prepayResult.setStatus("Success");
+
+            return prepayResult;
+
+        } else {
+            return prepayResult;
         }
 
-        try {
-            map.put("result", result);
-            map.put("info", info);
-            content = mapper.writeValueAsString(map);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return content;
     }
 
     /**
      * 调用统一下单接口
      * @param openId
      */
-    private String unifiedOrder(String openId, String clientIP, String randomNonceStr) {
+    private Map unifiedOrder(String openId, String clientIP, String randomNonceStr) throws Exception {
 
-        try {
+        String url = URL_UNIFIED_ORDER;
 
-            String url = URL_UNIFIED_ORDER;
+        PayInfo payInfo = createPayInfo(openId, clientIP, randomNonceStr);
+        String md5 = getSign(payInfo);
+        payInfo.setSign(md5);
 
-            PayInfo payInfo = createPayInfo(openId, clientIP, randomNonceStr);
-            String md5 = getSign(payInfo);
-            payInfo.setSign(md5);
+        logger.info("md5 value: " + md5);
 
-            logger.info("md5 value: " + md5);
+        String xml = CommonUtil.payInfoToXML(payInfo);
+        xml = xml.replace("__", "_");
 
-            String xml = CommonUtil.payInfoToXML(payInfo);
-            xml = xml.replace("__", "_").replace("<![CDATA[1]]>", "1");
+        logger.info("request body: {}", xml);
 
-            logger.info(xml);
+        MediaType TEXT = MediaType.parse("text/plain; charset=utf-8");
+        RequestBody body = RequestBody.create(TEXT, xml);
 
-            HttpUrl.Builder httpBuider = HttpUrl.parse(URL_UNIFIED_ORDER).newBuilder();
-            MediaType TEXT = MediaType.parse("text/plain; charset=utf-8");
-            RequestBody body = RequestBody.create(TEXT, xml);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
 
-            Request request = new Request.Builder()
-                    .url(url)
-                    .post(body)
-                    .build();
+        Response response = client.newCall(request).execute();
+        String bodyRaw = response.body().string();
 
-            Response response = client.newCall(request).execute();
-            String bodyRaw = response.body().string();
+        Map<String, String> result = CommonUtil.parseXml(bodyRaw);
 
+        result.put("sign", md5);
 
-            Map<String, String> result = CommonUtil.parseXml(bodyRaw);
+        ObjectMapper objectMapper = new ObjectMapper();
 
-            logger.info("unifiedOrder request return body: \n{}", result);
+        logger.info("unifiedOrder request return body: \n{}", objectMapper.writeValueAsString(result));
 
-            String return_code = result.get("return_code");
-            if(StringUtils.isNotBlank(return_code) && return_code.equals("SUCCESS")) {
-
-                String return_msg = result.get("return_msg");
-                if(StringUtils.isNotBlank(return_msg) && !return_msg.equals("OK")) {
-                    logger.error("统一下单，取得返回值失败.");
-                    return "";
-                }
-
-                String prepay_Id = result.get("prepay_id");
-                return prepay_Id;
-
-            } else {
-                return "";
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return "";
+        return result;
     }
 
     private PayInfo createPayInfo(String openId, String clientIP, String randomNonceStr) {
@@ -172,7 +200,7 @@ public class PayService {
         payInfo.setBody("可学养老金专业版生成报告");
         payInfo.setAttach("可学养老金计算器");
         payInfo.setOut_trade_no(randomOrderId);
-        payInfo.setTotal_fee(1); // todo: 单位：分
+        payInfo.setTotal_fee(fee);
         payInfo.setSpbill_create_ip(clientIP);
         payInfo.setTime_start(timeStart);
         payInfo.setTime_expire(timeExpire);

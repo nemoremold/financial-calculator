@@ -23,6 +23,33 @@ import java.util.*;
  */
 public class CommonUtil {
 
+    private static XStream xstream = new XStream(new XppDriver() {
+        public HierarchicalStreamWriter createWriter(Writer out) {
+            return new PrettyPrintWriter(out) {
+                //增加CDATA标记
+                boolean cdata = true;
+                @SuppressWarnings("rawtypes")
+                public void startNode(String name, Class clazz) {
+                    super.startNode(name, clazz);
+                    if(name.equals("sign")){
+                        cdata = false;
+                    }else {
+                        cdata = true;
+                    }
+                }
+                protected void writeText(QuickWriter writer, String text) {
+                    if (cdata) {
+                        writer.write("<![CDATA[");
+                        writer.write(text);
+                        writer.write("]]>");
+                    } else {
+                        writer.write(text);
+                    }
+                }
+            };
+        }
+    });
+
     /**
      *
      * @return 一串字符串，形式为 yyyymmddXXXXXX，X是随机数字
@@ -42,27 +69,7 @@ public class CommonUtil {
         return dateString + value;
     }
 
-    private static XStream xstream = new XStream(new XppDriver() {
-        public HierarchicalStreamWriter createWriter(Writer out) {
-            return new PrettyPrintWriter(out) {
-                //增加CDATA标记
-                boolean cdata = true;
-                @SuppressWarnings("rawtypes")
-                public void startNode(String name, Class clazz) {
-                    super.startNode(name, clazz);
-                }
-                protected void writeText(QuickWriter writer, String text) {
-                    if (cdata) {
-                        writer.write("<![CDATA[");
-                        writer.write(text);
-                        writer.write("]]>");
-                    } else {
-                        writer.write(text);
-                    }
-                }
-            };
-        }
-    });
+
 
     public static String payInfoToXML(PayInfo pi) {
         xstream.alias("xml", pi.getClass());
