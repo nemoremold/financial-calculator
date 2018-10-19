@@ -94,7 +94,7 @@ public class PayService {
         PrepayResult prepayResult = new PrepayResult();
         prepayResult.setPrepayId("");
         prepayResult.setSign("");
-        prepayResult.setStatus("Failed");
+        prepayResult.setStatus("FAILED");
 
         logger.info("openId: {}", openId);
 
@@ -122,7 +122,7 @@ public class PayService {
 
             String prepayId = unifiedOrderResult.get("prepay_id");
             logger.info("prepayId: {}", prepayId);
-            String sign = unifiedOrderResult.get("md5");
+            String sign = unifiedOrderResult.get("sign");
             logger.info("sign: {}", sign);
 
             if(StringUtils.isBlank(prepayId)) {
@@ -131,8 +131,11 @@ public class PayService {
             }
 
             prepayResult.setPrepayId(prepayId);
-            prepayResult.setPrepayId(sign);
-            prepayResult.setStatus("Success");
+            prepayResult.setSign(sign);
+            prepayResult.setStatus("SUCCESS");
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            logger.info("prepay result: {}", objectMapper.writeValueAsString(prepayResult));
 
             return prepayResult;
 
