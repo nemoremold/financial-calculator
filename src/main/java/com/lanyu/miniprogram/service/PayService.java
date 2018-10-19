@@ -52,7 +52,7 @@ public class PayService {
     // 单位：天
     private final static int TIME_EXPIRE = 2;
 
-    class PrepayResult{
+    public class PrepayResult{
         private String status;
         private String prepayId;
         private String sign;
