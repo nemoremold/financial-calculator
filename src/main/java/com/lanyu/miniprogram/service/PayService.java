@@ -58,6 +58,7 @@ public class PayService {
         private String sign;
         private String nonce_str;
         private String appId;
+        private String appKey;
 
         public String getStatus() {
             return status;
@@ -97,6 +98,14 @@ public class PayService {
 
         public void setAppId(String appId) {
             this.appId = appId;
+        }
+
+        public String getAppKey() {
+            return appKey;
+        }
+
+        public void setAppKey(String appKey) {
+            this.appKey = appKey;
         }
     }
 
@@ -154,6 +163,7 @@ public class PayService {
             prepayResult.setStatus("SUCCESS");
             prepayResult.setNonce_str(nonce_str);
             prepayResult.setAppId(appId);
+            prepayResult.setAppKey(appKey);
 
             ObjectMapper objectMapper = new ObjectMapper();
             logger.info("prepay result: {}", objectMapper.writeValueAsString(prepayResult));
