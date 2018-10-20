@@ -56,6 +56,8 @@ public class PayService {
         private String status;
         private String prepayId;
         private String sign;
+        private String nonce_str;
+        private String appId;
 
         public String getStatus() {
             return status;
@@ -79,6 +81,22 @@ public class PayService {
 
         public void setSign(String sign) {
             this.sign = sign;
+        }
+
+        public String getNonce_str() {
+            return nonce_str;
+        }
+
+        public void setNonce_str(String nonce_str) {
+            this.nonce_str = nonce_str;
+        }
+
+        public String getAppId() {
+            return appId;
+        }
+
+        public void setAppId(String appId) {
+            this.appId = appId;
         }
     }
 
@@ -124,6 +142,7 @@ public class PayService {
             logger.info("prepayId: {}", prepayId);
             String sign = unifiedOrderResult.get("sign");
             logger.info("sign: {}", sign);
+            String nonce_str = unifiedOrderResult.get("nonce_str");
 
             if(StringUtils.isBlank(prepayId)) {
                 logger.error("prepayId is empty");
@@ -133,6 +152,8 @@ public class PayService {
             prepayResult.setPrepayId(prepayId);
             prepayResult.setSign(sign);
             prepayResult.setStatus("SUCCESS");
+            prepayResult.setNonce_str(nonce_str);
+            prepayResult.setAppId(appId);
 
             ObjectMapper objectMapper = new ObjectMapper();
             logger.info("prepay result: {}", objectMapper.writeValueAsString(prepayResult));
