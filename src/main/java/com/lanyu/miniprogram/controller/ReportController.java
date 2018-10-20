@@ -2,6 +2,7 @@ package com.lanyu.miniprogram.controller;
 
 import com.google.gson.*;
 import com.lanyu.miniprogram.bean.RenderData;
+import com.lanyu.miniprogram.bean.Report;
 import com.lanyu.miniprogram.bean.ReportData;
 import com.lanyu.miniprogram.dto.TemplateDataDTO;
 import com.lanyu.miniprogram.dto.RenderDataDTO;
@@ -168,6 +169,25 @@ public class ReportController {
         TemplateDataDTO data = adapterService.inflateData(templateDataDTO);
 
         return new SingleResultResponse(reportService.getReport(data));
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/getReportPicsCount", method = RequestMethod.GET)
+    public SingleResultResponse getReportPicsCount(
+            @RequestParam(required = true) String wechatId
+    ) throws IOException {
+        return new SingleResultResponse(reportRepository.countAllByWechatId(wechatId));
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/whetherExists", method = RequestMethod.GET)
+    public SingleResultResponse whetherExists(
+            @RequestParam(required = true) String wechatId,
+            @RequestParam(required = true) String timestamp
+    ) throws IOException {
+        Report report = reportRepository.getReportByWechatIdAndTimestamp(wechatId, timestamp);
+        Boolean result = report == null? false: true;
+        return new SingleResultResponse(result);
     }
 
     @RequestMapping(path = "/auth", method = RequestMethod.GET)
