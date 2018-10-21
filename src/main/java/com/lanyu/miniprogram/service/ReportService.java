@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -83,6 +84,42 @@ public class ReportService {
         logger.info("output: {}", total);
 
         return total;
+    }
+
+    @Transactional
+    public String deleteReportData(String wechatId, String timestamp) {
+        if (reportDataRepository.getReportDataByWechatIdAndTimestamp(wechatId, timestamp) == null) {
+            return "not exist";
+        }
+        if (reportRepository.getReportByWechatIdAndTimestamp(wechatId, timestamp) != null) {
+            return "report exists, deletion is not allowed";
+        }
+        reportDataRepository.deleteReportDataByWechatIdAndTimestamp(wechatId, timestamp);
+        if (reportDataRepository.getReportDataByWechatIdAndTimestamp(wechatId, timestamp) == null) {
+            return "deleted";
+        }
+        return "deletion failed";
+    }
+
+    @Transactional
+    public String deleteReport(String wechatId, String timestamp) {
+        if (reportRepository.getReportByWechatIdAndTimestamp(wechatId, timestamp) == null) {
+            return "not exist";
+        }
+        reportRepository.deleteReportByWechatIdAndTimestamp(wechatId, timestamp);
+        if (reportDataRepository.getReportDataByWechatIdAndTimestamp(wechatId, timestamp) != null) {
+            reportDataRepository.deleteReportDataByWechatIdAndTimestamp(wechatId, timestamp);
+        }
+        if (reportRepository.getReportByWechatIdAndTimestamp(wechatId, timestamp) != null && reportRepository.getReportByWechatIdAndTimestamp(wechatId, timestamp) != null) {
+            return "report and report data deletion failed";
+        }
+        if (reportRepository.getReportByWechatIdAndTimestamp(wechatId, timestamp) != null) {
+            return "report deletion failed";
+        }
+        if (reportDataRepository.getReportDataByWechatIdAndTimestamp(wechatId, timestamp) != null) {
+            return "report data deletion failed";
+        }
+        return "deleted";
     }
 
     /**

@@ -15,4 +15,6 @@ public interface ReportDataRepository extends JpaRepository<ReportData, String> 
     List<ReportData> getAllByWechatIdOrderByTimestamp(String wechatId);
 
     int countByWechatId(String wechatId);
+
+    void deleteReportDataByWechatIdAndTimestamp(String wechatId, String timestamp);
 }

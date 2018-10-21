@@ -11,5 +11,8 @@ import java.util.List;
  */
 public interface ReportRepository extends JpaRepository<Report, String> {
     Report getReportByWechatIdAndTimestamp(String wechatId, String timestamp);
+
     int countAllByWechatId(String wechatId);
+
+    void deleteReportByWechatIdAndTimestamp(String wechatId, String timestamp);
 }

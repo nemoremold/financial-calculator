@@ -33,8 +33,8 @@ public class UserLoginService {
      */
     public String getOpenId(String code) throws IOException {
         HttpUrl.Builder httpBuider = HttpUrl.parse(URL).newBuilder()
-                .addQueryParameter("appid",appId)
-                .addQueryParameter("secret",secret)
+                .addQueryParameter("appid", appId)
+                .addQueryParameter("secret", secret)
                 .addQueryParameter("js_code", code)
                 .addQueryParameter("grant_type", "authorization_code");
 

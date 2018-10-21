@@ -104,7 +104,42 @@ public class ReportController {
     public SingleResultResponse setReportData(
             @RequestBody ReportData reportData
     ) {
+        String wechatId = reportData.getWechatId();
+        String timestamp = reportData.getTimestamp();
+        if (reportDataRepository.getReportDataByWechatIdAndTimestamp(wechatId, timestamp) != null) {
+            return new SingleResultResponse(false);
+        }
         return new SingleResultResponse(reportDataRepository.save(reportData));
+    }
+
+    /**
+     * 根据id与timestamp 删除某个特定的ReportData
+     * @param wechatId
+     * @param timestamp
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(path = "/deleteReportData", method = RequestMethod.GET)
+    public SingleResultResponse deleteReportDataByCompositeKey(
+            @RequestParam(required = true) String wechatId,
+            @RequestParam(required = true) String timestamp
+    ) {
+        return new SingleResultResponse(reportService.deleteReportData(wechatId, timestamp));
+    }
+
+    /**
+     * 根据id与timestamp 删除某个特定的Report
+     * @param wechatId
+     * @param timestamp
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(path = "/deleteReport", method = RequestMethod.GET)
+    public SingleResultResponse deleteReportByCompositeKey(
+            @RequestParam(required = true) String wechatId,
+            @RequestParam(required = true) String timestamp
+    ) {
+        return new SingleResultResponse(reportService.deleteReport(wechatId, timestamp));
     }
 
     /**
